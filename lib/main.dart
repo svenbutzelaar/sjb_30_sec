@@ -27,6 +27,7 @@ class _MyHomePageState extends State<MyHomePage> {
   List _words = [];
   List _items = <String>[];
   Random random = Random();
+  final List<int> colorCodes = <int>[600, 400, 600, 400, 600];
 
   Timer? countdownTimer;
   Duration timeLeft = const Duration(seconds: 30);
@@ -96,6 +97,24 @@ class _MyHomePageState extends State<MyHomePage> {
               child: Text('Start!', style: style),
             ),
           if (counting) Text(timeLeft.inSeconds.toString(), style: style),
+
+          ListView.separated(
+            padding: const EdgeInsets.all(8),
+            
+            itemBuilder: (BuildContext, index) {
+                return Container(
+                  height: 50,
+                  color: Color.fromARGB(246, 14, 5, 100),
+                  child: Center(child: Text(_items[index].toString(),
+                  style: const TextStyle(color: Color.fromARGB(255, 255, 255, 100)))),
+                );
+            },
+            itemCount: _items.length,
+            shrinkWrap: true,
+            separatorBuilder: (BuildContext context, int index) => const Divider(),
+          )
+          
+          /*
           ListView.builder(
             itemBuilder: (BuildContext, index) {
               return Text(_items[index].toString(),
@@ -103,7 +122,8 @@ class _MyHomePageState extends State<MyHomePage> {
             },
             itemCount: _items.length,
             shrinkWrap: true,
-          )
+          )*/
+
         ]),
       ),
     ));
