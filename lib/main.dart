@@ -27,11 +27,11 @@ class _MyHomePageState extends State<MyHomePage> {
   List _words = [];
   List _items = <String>[];
   Random random = Random();
-  final List<int> colorCodes = <int>[600, 400, 600, 400, 600];
 
   Timer? countdownTimer;
   Duration timeLeft = const Duration(seconds: 30);
   bool counting = false;
+  bool waiting = false;
 
   Future<List> readCSV() async {
     final String response =
@@ -52,8 +52,19 @@ class _MyHomePageState extends State<MyHomePage> {
     startTimer();
   }
 
+  void readyScreen() {
+    setState(() {
+      waiting = true;
+      counting = false;
+      timeLeft = const Duration(seconds: 5);
+    });
+      countdownTimer = 
+        Timer.periodic(const Duration(seconds: 1), (_) => setCountDown());    
+  }
+
   void startTimer() {
     setState(() {
+      waiting = false;
       counting = true;
       timeLeft = const Duration(seconds: 30);
     });
@@ -64,10 +75,14 @@ class _MyHomePageState extends State<MyHomePage> {
   void setCountDown() {
     setState(() {
       final seconds = timeLeft.inSeconds - 1;
-      if (seconds == 0) {
+      if (seconds == 0 && waiting == false) {
         counting = false;
         playAlarm();
         countdownTimer!.cancel();
+      } else if (seconds == 0 && waiting == true) {
+        waiting = false;
+        countdownTimer!.cancel();
+        refreshWords();
       } else {
         timeLeft = Duration(seconds: seconds);
         counting = true;
@@ -91,12 +106,16 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(children: [
-          if (!counting)
-            ElevatedButton(
-              onPressed: refreshWords,
-              child: Text('Start!', style: style),
-            ),
+          
           if (counting) Text(timeLeft.inSeconds.toString(), style: style),
+          if (!counting)
+            if (!waiting)
+              ElevatedButton(
+                onPressed: readyScreen,
+                child: Text('Start!', style: style),
+              ),
+            if(waiting)
+              Text(timeLeft.inSeconds.toString(), style: style),
 
           ListView.separated(
             padding: const EdgeInsets.all(8),
@@ -106,7 +125,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   height: 50,
                   color: Color.fromARGB(246, 14, 5, 100),
                   child: Center(child: Text(_items[index].toString(),
-                  style: const TextStyle(color: Color.fromARGB(255, 255, 255, 100)))),
+                  style: const TextStyle(color: Color.fromARGB(255, 250, 250, 248)))),
                 );
             },
             itemCount: _items.length,
