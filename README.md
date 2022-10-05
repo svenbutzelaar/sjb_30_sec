@@ -1,8 +1,10 @@
 # sjb_30_sec
 
-A new Flutter project.
+30 seconds game to play using sintjansbrug words
 
 ## Getting Started
+
+all code can be found in /lib/main.dart
 
 This project is a starting point for a Flutter application.
 
