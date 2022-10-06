@@ -24,14 +24,23 @@ class _MyHomePageState extends State<MyHomePage> {
     fontWeight: FontWeight.bold,
   );
 
+//States: List with countdown + Countdown to new list + Start
   List _words = [];
   List _items = <String>[];
   Random random = Random();
 
   Timer? countdownTimer;
   Duration timeLeft = const Duration(seconds: 30);
-  bool counting = false;
-  bool waiting = false;
+
+  //List states = <String>["Start", "Countdown30", "Countdown5"];
+  String currentState = "Start";
+  //List teams = <String>["Team 1", "Team 2"];
+  //int currentTeam = 0;
+  //Possible states: "Start", "Countdown30", "Countdown5"
+
+
+  //bool counting = false;
+  //bool waiting = false;
 
   Future<List> readCSV() async {
     final String response =
@@ -41,6 +50,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> refreshWords() async {
+    
     _items = [];
     if (_words.length < 5) _words = await readCSV();
     setState(() {
@@ -54,8 +64,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void readyScreen() {
     setState(() {
-      waiting = true;
-      counting = false;
+      currentState = "Countdown5";
+      //waiting = true;
+      //counting = false;
       timeLeft = const Duration(seconds: 5);
     });
       countdownTimer = 
@@ -64,8 +75,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void startTimer() {
     setState(() {
-      waiting = false;
-      counting = true;
+      //waiting = false;
+      //counting = true;
       timeLeft = const Duration(seconds: 30);
     });
     countdownTimer =
@@ -75,17 +86,19 @@ class _MyHomePageState extends State<MyHomePage> {
   void setCountDown() {
     setState(() {
       final seconds = timeLeft.inSeconds - 1;
-      if (seconds == 0 && waiting == false) {
-        counting = false;
+
+
+      if (seconds == 0 && currentState == "Countdown30") {
+        currentState = "Start";
         playAlarm();
         countdownTimer!.cancel();
-      } else if (seconds == 0 && waiting == true) {
-        waiting = false;
+      } else if (seconds == 0 && currentState == "Countdown5") {
+        currentState = "Countdown30";
         countdownTimer!.cancel();
         refreshWords();
       } else {
         timeLeft = Duration(seconds: seconds);
-        counting = true;
+        //counting = true;
       }
     });
   }
@@ -106,6 +119,16 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(children: [
+          if(currentState == "Start")
+            ElevatedButton(
+                onPressed: readyScreen,
+                child: Text('Start!', style: style),
+              )            
+          else if(currentState == "Countdown30")
+            Text(timeLeft.inSeconds.toString(), style: style)
+          else
+            Text(timeLeft.inSeconds.toString(), style: style),
+          /*
           
           if (counting) Text(timeLeft.inSeconds.toString(), style: style),
           if (!counting)
@@ -115,8 +138,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: Text('Start!', style: style),
               ),
             if(waiting)
+            //FIX DOUBLE TIMER BUG
               Text(timeLeft.inSeconds.toString(), style: style),
-
+*/
           ListView.separated(
             padding: const EdgeInsets.all(8),
             
