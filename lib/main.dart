@@ -8,10 +8,12 @@ import 'package:flutter/services.dart';
 import 'dart:math';
 
 void main() {
+  
   runApp(const MyHomePage());
 }
 
 class MyHomePage extends StatefulWidget {
+  
   const MyHomePage({Key? key}) : super(key: key);
 
   @override
@@ -20,6 +22,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   TextStyle style = const TextStyle(
+    color: Color.fromARGB(255, 250, 250, 248),
     fontSize: 50,
     fontWeight: FontWeight.bold,
   );
@@ -34,13 +37,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   //List states = <String>["Start", "Countdown30", "Countdown5"];
   String currentState = "Start";
-  //List teams = <String>["Team 1", "Team 2"];
-  //int currentTeam = 0;
-  //Possible states: "Start", "Countdown30", "Countdown5"
-
-
-  //bool counting = false;
-  //bool waiting = false;
 
   Future<List> readCSV() async {
     final String response =
@@ -65,8 +61,6 @@ class _MyHomePageState extends State<MyHomePage> {
   void readyScreen() {
     setState(() {
       currentState = "Countdown5";
-      //waiting = true;
-      //counting = false;
       timeLeft = const Duration(seconds: 5);
     });
       countdownTimer = 
@@ -75,8 +69,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void startTimer() {
     setState(() {
-      //waiting = false;
-      //counting = true;
       timeLeft = const Duration(seconds: 30);
     });
     countdownTimer =
@@ -98,7 +90,6 @@ class _MyHomePageState extends State<MyHomePage> {
         refreshWords();
       } else {
         timeLeft = Duration(seconds: seconds);
-        //counting = true;
       }
     });
   }
@@ -112,9 +103,14 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+          theme: ThemeData(
+          scaffoldBackgroundColor: Color.fromARGB(255, 63, 81, 129),
+          fontFamily: 'Roboto',
+        ),
         home: Scaffold(
-      appBar: AppBar(
-        title: const Text('SJB Seconds'),
+        appBar: AppBar(
+        backgroundColor: Color.fromARGB(255, 24, 46, 105),
+        title: Text('SJB Seconds', style: style),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -128,26 +124,15 @@ class _MyHomePageState extends State<MyHomePage> {
             Text(timeLeft.inSeconds.toString(), style: style)
           else
             Text(timeLeft.inSeconds.toString(), style: style),
-          /*
-          
-          if (counting) Text(timeLeft.inSeconds.toString(), style: style),
-          if (!counting)
-            if (!waiting)
-              ElevatedButton(
-                onPressed: readyScreen,
-                child: Text('Start!', style: style),
-              ),
-            if(waiting)
-            //FIX DOUBLE TIMER BUG
-              Text(timeLeft.inSeconds.toString(), style: style),
-*/
+        
           ListView.separated(
             padding: const EdgeInsets.all(8),
             
             itemBuilder: (BuildContext, index) {
                 return Container(
                   height: 50,
-                  color: Color.fromARGB(246, 14, 5, 100),
+                  color: Color.fromARGB(255, 223, 70, 59),
+                  //Color.fromARGB(255, 63, 81, 129),
                   child: Center(child: Text(_items[index].toString(),
                   style: const TextStyle(color: Color.fromARGB(255, 250, 250, 248)))),
                 );
@@ -156,16 +141,6 @@ class _MyHomePageState extends State<MyHomePage> {
             shrinkWrap: true,
             separatorBuilder: (BuildContext context, int index) => const Divider(),
           )
-          
-          /*
-          ListView.builder(
-            itemBuilder: (BuildContext, index) {
-              return Text(_items[index].toString(),
-                  style: const TextStyle(fontSize: 25));
-            },
-            itemCount: _items.length,
-            shrinkWrap: true,
-          )*/
 
         ]),
       ),
